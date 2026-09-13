@@ -68,12 +68,16 @@ header button{border:1px solid var(--line);background:var(--paper);color:var(--i
 footer{width:100%;max-width:520px;font-size:12px;color:var(--ink2);text-align:center;padding-top:10px}
 footer a{color:var(--acc)}
 .def{font-size:14px;color:var(--ink2);margin-top:6px}
+.hintwrap{width:min(100%,330px);text-align:center;margin:-6px 0 10px}
+.hintwrap .btn{padding:8px 14px;font-size:14px}
+.hintwrap .def{margin:8px 0 0;font-size:15px;color:var(--ink)}
 </style>
 </head>
 <body>
 <header><h1>Skruv<span>at</span></h1><div class="btns"><button id="help" aria-label="Hur spelar man">?</button><button id="stat" aria-label="Statistik">▮</button></div></header>
 <div class="sub"><span id="dayno">Dagens byggord</span><span id="streak"></span></div>
 <div class="board" id="board"></div>
+<div class="hintwrap" id="hintwrap" hidden><button class="btn" id="hint">Ledtråd</button><p class="def" id="hinttxt" hidden></p></div>
 <div class="kb" id="kb"></div>
 <footer>Ett byggord om dagen från <a href="https://stahledigital.se/verkstaden">Ståhle Digital · Verkstaden</a> · <a href="https://raknaren.stahledigital.se/">Materialräknaren</a></footer>
 <div class="toast" id="toast"></div>
@@ -135,6 +139,7 @@ function evaluate(g){const res=Array(5).fill('miss');const a=ANSWER.split('');co
 function paintRow(i,g,res,anim){const tiles=[...rows[i].children];tiles.forEach((t,j)=>{const f=()=>{t.textContent=g[j];t.classList.add('filled',res[j]);};anim?setTimeout(f,j*120):f();
   const k=kb.querySelector(`[data-k="${g[j]}"]`);if(k){const rank={miss:1,near:2,hit:3};const curr=k.classList.contains('hit')?3:k.classList.contains('near')?2:k.classList.contains('miss')?1:0;if(rank[res[j]]>curr){k.classList.remove('hit','near','miss');k.classList.add(res[j]);}}});}
 function drawCur(){const i=S.rows.length;if(i>5)return;[...rows[i].children].forEach((t,j)=>{t.textContent=cur[j]||'';t.classList.toggle('filled',!!cur[j]);});}
+function updHint(){const w=$('hintwrap');w.hidden=!(S.rows.length>=3&&!S.done);if(S.hinted){$('hinttxt').hidden=false;$('hinttxt').textContent='Ledtråd: '+W[ANSWER];$('hint').hidden=true;}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function press(ch){if(S.done||busy)return;
   if(ch==='⌫'){cur=cur.slice(0,-1);drawCur();return;}
@@ -143,7 +148,7 @@ function press(ch){if(S.done||busy)return;
 }
 function submit(){if(cur.length<5){rows[S.rows.length].classList.add('shake');setTimeout(()=>rows[S.rows.length].classList.remove('shake'),400);toast('Fem bokstäver');return;}
   const g=cur;const res=evaluate(g);const i=S.rows.length;S.rows.push(g);busy=true;paintRow(i,g,res,true);cur='';
-  setTimeout(()=>{busy=false;const win=g===ANSWER;if(win||S.rows.length===6){S.done=true;const st=S.stats;st.n++;if(win){st.w++;st.s=(st.last===dayNo-1)?st.s+1:1;st.m=Math.max(st.m,st.s);st.d[S.rows.length-1]++;}else{st.s=0;}st.last=dayNo;save();toast(win?['Första försöket!','Snyggt!','Bra jobbat','Stabilt','Puh!','Precis!'][S.rows.length-1]:ANSWER,win?1500:3000);setTimeout(openStats,1200);}else save();},700);}
+  setTimeout(()=>{busy=false;const win=g===ANSWER;if(win||S.rows.length===6){S.done=true;const st=S.stats;st.n++;if(win){st.w++;st.s=(st.last===dayNo-1)?st.s+1:1;st.m=Math.max(st.m,st.s);st.d[S.rows.length-1]++;}else{st.s=0;}st.last=dayNo;save();toast(win?['Första försöket!','Snyggt!','Bra jobbat','Stabilt','Puh!','Precis!'][S.rows.length-1]:ANSWER,win?1500:3000);setTimeout(openStats,1200);}else save();updHint();},700);}
 function openStats(){const st=S.stats;$('s_n').textContent=st.n;$('s_w').textContent=st.n?Math.round(st.w/st.n*100):0;$('s_s').textContent=st.s;$('s_m').textContent=st.m;
   const mx=Math.max(1,...st.d);$('dist').innerHTML=st.d.map((v,i)=>`<div><span style="background:none;color:var(--ink);padding:0">${i+1}</span><span class="${S.done&&S.rows[S.rows.length-1]===ANSWER&&S.rows.length===i+1?'me':''}" style="width:${Math.max(8,v/mx*100)}%">${v}</span></div>`).join('');
   $('mtitle').textContent=S.done?(S.rows[S.rows.length-1]===ANSWER?`Dagens ord: ${ANSWER}`:`Det var ${ANSWER}`):'Statistik';
@@ -151,7 +156,7 @@ function openStats(){const st=S.stats;$('s_n').textContent=st.n;$('s_w').textCon
   const t=new Date();const next=new Date(t.getFullYear(),t.getMonth(),t.getDate()+1);const ms=next-t;const h=Math.floor(ms/3600000),m=Math.floor(ms%3600000/60000);
   $('next').textContent=`Nästa byggord om ${h} h ${m} min.`;$('share').style.display=S.done?'':'none';$('mstat').classList.add('on');}
 $('share').onclick=async()=>{const win=S.rows[S.rows.length-1]===ANSWER;const grid=S.rows.map(g=>evaluate(g).map(r=>r==='hit'?'🟧':r==='near'?'🟨':'⬜').join('')).join('\n');
-  const text=`Skruvat #${dayNo+1} ${win?S.rows.length:'X'}/6\n${grid}\nhttps://skruvat.stahledigital.se`;
+  const text=`Skruvat #${dayNo+1} ${win?S.rows.length:'X'}/6${S.hinted?' 💡':''}\n${grid}\nhttps://skruvat.stahledigital.se`;
   if(navigator.share){try{await navigator.share({text});return;}catch(e){}}try{await navigator.clipboard.writeText(text);toast('Kopierat – klistra in var du vill');}catch(e){toast('Kunde inte kopiera');}};
 $('help').onclick=()=>$('mhelp').classList.add('on');$('stat').onclick=openStats;
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('.modal').classList.remove('on'));
@@ -159,6 +164,8 @@ document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if
 document.addEventListener('keydown',e=>{if(e.metaKey||e.ctrlKey)return;const k=e.key;if(k==='Enter')press('⏎');else if(k==='Backspace')press('⌫');else if(/^[a-zåäö]$/i.test(k))press(k.toUpperCase());});
 // restore
 S.rows.forEach((g,i)=>paintRow(i,g,evaluate(g),false));
+$('hint').onclick=()=>{S.hinted=true;save();updHint();};
+updHint();
 $('streak').textContent=S.stats.s?`🔥 ${S.stats.s} i rad`:'';
 if(!S.rows.length&&!localStorage.getItem(KEY+'_seen')){$('mhelp').classList.add('on');try{localStorage.setItem(KEY+'_seen','1')}catch(e){}}
 if(S.done)setTimeout(openStats,300);
