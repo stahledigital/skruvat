@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://skruvat.stahledigital.se/sitemap.xml

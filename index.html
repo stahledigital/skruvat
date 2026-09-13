@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f0643b">
+<title>Skruvat – dagens byggord</title>
+<meta name="description" content="Skruvat är dagens ordpussel för alla som bygger. Sex gissningar på ett byggord med fem bokstäver – nytt ord varje dag. Gratis, från Ståhle Digital i Växjö.">
+<link rel="canonical" href="https://skruvat.stahledigital.se/">
+<meta property="og:title" content="Skruvat – dagens byggord">
+<meta property="og:description" content="Sex gissningar. Fem bokstäver. Ett byggord om dagen. Klarar du dagens?">
+<meta property="og:url" content="https://skruvat.stahledigital.se/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://skruvat.stahledigital.se/og.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Skruvat">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Barlow:wght@400;600&display=swap">
+<style>
+:root{--bg:#f6f5f1;--paper:#fffcf8;--ink:#161616;--ink2:#5c5c5c;--line:#16161624;--acc:#f0643b;--hit:#f0643b;--near:#e8b31a;--miss:#8a877f;--key:#e8e6df}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Barlow,system-ui,sans-serif;padding:0 12px;padding-block:0 12px;display:flex;flex-direction:column;align-items:center;min-height:100dvh}
+header{width:100%;max-width:480px;display:flex;justify-content:space-between;align-items:center;padding-block:14px 6px;border-bottom:3px solid var(--acc)}
+header h1{font-family:"Barlow Condensed",sans-serif;font-size:32px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;margin:0}
+header h1 span{color:var(--acc)}
+header .btns{display:flex;gap:6px}
+header button{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:6px;width:36px;height:36px;font-size:18px;cursor:pointer}
+.sub{width:100%;max-width:480px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);font-weight:600;padding:8px 0 0;display:flex;justify-content:space-between}
+.board{display:grid;grid-template-rows:repeat(6,1fr);gap:6px;margin:16px 0;width:min(100%,330px)}
+.row{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.tile{aspect-ratio:1;border:2px solid var(--line);border-radius:6px;display:grid;place-items:center;font-family:"Barlow Condensed",sans-serif;font-size:34px;font-weight:700;text-transform:uppercase;background:var(--paper);transition:transform .1s}
+.tile.filled{border-color:var(--ink)}
+.tile.hit{background:var(--hit);border-color:var(--hit);color:#fff}
+.tile.near{background:var(--near);border-color:var(--near);color:#161616}
+.tile.miss{background:var(--miss);border-color:var(--miss);color:#fff}
+.row.shake{animation:sh .35s}
+@keyframes sh{20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.tile.pop{transform:scale(1.08)}
+.kb{width:100%;max-width:520px;display:grid;gap:6px;margin-top:auto}
+.krow{display:flex;gap:5px;justify-content:center}
+.key{flex:1;max-width:44px;height:52px;border:0;border-radius:6px;background:var(--key);color:var(--ink);font:600 15px Barlow,sans-serif;text-transform:uppercase;cursor:pointer;touch-action:manipulation}
+.key.wide{max-width:70px;flex:1.6;font-size:13px}
+.key.hit{background:var(--hit);color:#fff}.key.near{background:var(--near)}.key.miss{background:var(--miss);color:#fff}
+.toast{position:fixed;top:78px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s;z-index:5}
+.toast.on{opacity:1}
+.modal{position:fixed;inset:0;background:#16161699;display:none;place-items:center;padding:16px;z-index:10}
+.modal.on{display:grid}
+.card{background:var(--paper);border-radius:12px;padding:22px 20px;max-width:420px;width:100%;position:relative}
+.card h2{font-family:"Barlow Condensed",sans-serif;font-size:28px;text-transform:uppercase;margin:0 0 8px}
+.card p{margin:8px 0;line-height:1.45}
+.card .x{position:absolute;top:10px;right:12px;border:0;background:none;font-size:22px;cursor:pointer}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}
+.stat{text-align:center}.stat b{display:block;font-family:"Barlow Condensed",sans-serif;font-size:30px;line-height:1}.stat small{color:var(--ink2);font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+.dist{display:grid;gap:4px;margin:8px 0 14px}
+.dist div{display:grid;grid-template-columns:14px 1fr;gap:8px;align-items:center;font-size:13px}
+.dist span{background:var(--miss);color:#fff;padding:2px 6px;border-radius:4px;min-width:22px;text-align:right;font-weight:600}
+.dist span.me{background:var(--acc)}
+.btn{display:inline-block;border:1px solid var(--ink);background:var(--ink);color:var(--bg);font:600 15px Barlow,sans-serif;padding:11px 16px;border-radius:8px;cursor:pointer}
+.btn.acc{background:var(--acc);border-color:var(--acc);color:#fff}
+.ex{display:flex;gap:4px;margin:6px 0}
+.ex .tile{width:34px;font-size:20px;aspect-ratio:1}
+footer{width:100%;max-width:520px;font-size:12px;color:var(--ink2);text-align:center;padding-top:10px}
+footer a{color:var(--acc)}
+.def{font-size:14px;color:var(--ink2);margin-top:6px}
+</style>
+</head>
+<body>
+<header><h1>Skruv<span>at</span></h1><div class="btns"><button id="help" aria-label="Hur spelar man">?</button><button id="stat" aria-label="Statistik">▮</button></div></header>
+<div class="sub"><span id="dayno">Dagens byggord</span><span id="streak"></span></div>
+<div class="board" id="board"></div>
+<div class="kb" id="kb"></div>
+<footer>Ett byggord om dagen från <a href="https://stahledigital.se/verkstaden">Ståhle Digital · Verkstaden</a> · <a href="https://raknaren.stahledigital.se/">Materialräknaren</a></footer>
+<div class="toast" id="toast"></div>
+
+<div class="modal" id="mhelp"><div class="card"><button class="x" data-close>×</button>
+<h2>Så spelar du</h2>
+<p>Gissa dagens byggord på sex försök. Fem bokstäver, alla ord som hör hemma på ett bygge, i en verkstad eller vid disken.</p>
+<div class="ex"><div class="tile hit">R</div><div class="tile">E</div><div class="tile">G</div><div class="tile">E</div><div class="tile">L</div></div>
+<p><b>Orange</b> – rätt bokstav på rätt plats.</p>
+<div class="ex"><div class="tile">S</div><div class="tile near">P</div><div class="tile">O</div><div class="tile">N</div><div class="tile">T</div></div>
+<p><b>Gul</b> – bokstaven finns i ordet, men på annan plats.</p>
+<div class="ex"><div class="tile">K</div><div class="tile">A</div><div class="tile">K</div><div class="tile miss">E</div><div class="tile">L</div></div>
+<p><b>Grå</b> – bokstaven finns inte i ordet.</p>
+<p>Nytt ord varje dag vid midnatt. Å, Ä och Ö räknas som egna bokstäver.</p>
+</div></div>
+
+<div class="modal" id="mstat"><div class="card"><button class="x" data-close>×</button>
+<h2 id="mtitle">Statistik</h2>
+<p id="mdef" class="def"></p>
+<div class="stats"><div class="stat"><b id="s_n">0</b><small>Spelade</small></div><div class="stat"><b id="s_w">0</b><small>Vinst %</small></div><div class="stat"><b id="s_s">0</b><small>Streak</small></div><div class="stat"><b id="s_m">0</b><small>Bästa</small></div></div>
+<div class="dist" id="dist"></div>
+<p id="next"></p>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn acc" id="share">Dela resultat</button><a class="btn" href="https://raknaren.stahledigital.se/" style="text-decoration:none">Räkna material</a></div>
+</div></div>
+
+<script>
+(function(){
+// Ordlista: fem bokstäver, byggets och verkstadens ord. Ordningen är blandad med fast frö så dagens ord är samma för alla.
+const W={
+ REGEL:"Trästycke i en väggstomme, oftast 45×95 eller 45×145.",SPONT:"Not och fjäder – så brädorna hakar i varandra.",SPIKA:"Fästa med spik.",SKRUV:"Gängat fästdon – gips-, trall- eller träskruv.",PLINT:"Gjuten betongfot som bär en stolpe eller ett däck.",GJUTA:"Fylla en form med betong.",MURAR:"Den som lägger tegel, block och puts.",PUTSA:"Lägga puts på en vägg.",KAKEL:"Glaserade plattor för vägg.",PANEL:"Brädor som klär en vägg – inne eller ute.",TRALL:"Brädorna du går på på altanen.",BRÄDA:"Sågat virke, bredare än det är tjockt.",PLANK:"Grov bräda, ofta 45 mm eller mer.",GIPSA:"Klä en vägg med gipsskivor.",SLIPA:"Jämna en yta med slippapper eller maskin.",HYVLA:"Jämna virke med hyvel – hyvlat mot sågat.",BORRA:"Göra hål med borrmaskin.",FRÄSA:"Bearbeta med fräs, till exempel spår eller kanter.",LIMMA:"Fästa med lim.",FOGAR:"Fyller skarven mellan plattor eller stenar.",STEGE:"Den du klättrar på.",FASAD:"Husets yttervägg utåt sett.",FODER:"Listen runt dörr och fönster.",TAPET:"Papper eller vinyl på väggen.",ROLLA:"Måla med roller.",KITTA:"Täta fönsterglas med kitt.",DREVA:"Täta springan runt karmen med drev.",TEGEL:"Bränd lera – i mur och på tak.",GRÄVA:"Ta bort jord – för grund, dränering eller kabel.",FORMA:"Bygga formen som betongen gjuts i.",TAKÅS:"Husets högsta linje – nocken.",GAVEL:"Husets kortsida upp till nocken.",RÄNNA:"Hängrännan som tar regnvattnet.",FALSA:"Vika plåt så skarven blir tät.",KUPOL:"Välvt tak eller takfönster.",SPÄRR:"Ångspärr – plasten på insidan av isoleringen.",STÄLL:"Byggställning, kort sagt.",STAGA:"Stabilisera med snedsträvor.",HÄNGA:"Montera dörr, skåp eller hylla.",HYLLA:"Den du hänger upp.",FLISA:"Liten bit som lossnar – eller ett sten- eller kakelfragment.",METER:"Grundmåttet. Tumstocken är en meter lång utvikt – nästan.",LASER:"Lasermätare eller korslaser för lod och våg.",KRITA:"Kritsnöre – slår raka linjer.",SNÖRE:"Kritsnöre, murarsnöre, lodsnöre.",KOFOT:"Bräckjärn – river och bänder.",SKIFT:"Skiftnyckel – ställbar nyckel.",BLECK:"Tunn plåt – plåtbleck vid fönster.",BULTA:"Fästa med bult och mutter.",SPALT:"Springan mellan trallbrädorna.",FIBER:"Fiberduk under makadam – eller fiber till huset.",TEJPA:"Täta skarvar i ångspärr och vindduk.",GRUND:"Det huset står på – och första strykningen färg.",SVETS:"Fogen två metallstycken delar.",LACKA:"Lägga lack på trä eller metall.",BETSA:"Färga trä utan att dölja ådringen.",TORKA:"Låta betong, färg eller virke torka.",FÄSTE:"Beslag som håller något på plats.",PLUGG:"Det i väggen som skruven biter i.",GÄNGA:"Skruvens spiral – eller att göra den.",KLYVA:"Såga längs fibrerna.",BYGGA:"Det vi håller på med.",BYGGE:"Platsen där det händer.",ALTAN:"Uteplatsen av trall och reglar.",STAKE:"Staket-delen: stolpen eller ribban.",GRIND:"Öppningen i staketet.",SKÄRM:"Insynsskärm eller plank vid uteplatsen.",STUGA:"Litet hus, ofta på landet.",VILLA:"Enfamiljshus.",SKIVA:"Gips-, OSB- eller plywoodskiva.",PLYFA:"Plywood, som proffsen säger.",MÅLAR:"Den som håller i penseln.",LODAR:"Kontrollerar att det står lodrätt.",SÅGAR:"Kapar virke.",KAPAR:"Sågar av på rätt längd.",MÄTER:"Första steget – mät två gånger, kapa en.",LISTA:"Golv-, tak- eller fotlisten.",RASPA:"Grovfil för trä.",SPADE:"Gräv.",
+};
+const KEYS=Object.keys(W);
+// deterministisk blandning (fast frö)
+function rng(s){return function(){s=(s*1664525+1013904223)%4294967296;return s/4294967296}}
+const r=rng(20260913);const ORDER=KEYS.slice();for(let i=ORDER.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[ORDER[i],ORDER[j]]=[ORDER[j],ORDER[i]];}
+const EPOCH=Date.UTC(2026,8,14); // 14 sep 2026 = Skruvat #1
+const now=new Date();const todayUTC=Date.UTC(now.getFullYear(),now.getMonth(),now.getDate());
+const dayNo=Math.max(0,Math.floor((todayUTC-EPOCH)/86400000));
+const ANSWER=ORDER[dayNo%ORDER.length];
+const $=id=>document.getElementById(id);
+$('dayno').textContent=`Skruvat #${dayNo+1}`;
+
+// state
+const KEY='skruvat';let S;try{S=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){S={}}
+S.stats=S.stats||{n:0,w:0,s:0,m:0,d:[0,0,0,0,0,0],last:-1};
+if(S.day!==dayNo){S.day=dayNo;S.rows=[];S.done=false;}
+let cur='';let busy=false;
+const board=$('board');
+for(let i=0;i<6;i++){const row=document.createElement('div');row.className='row';for(let j=0;j<5;j++){const t=document.createElement('div');t.className='tile';row.appendChild(t);}board.appendChild(row);}
+const rows=[...board.children];
+const layout=['QWERTYUIOPÅ','ASDFGHJKLÖÄ','⏎ZXCVBNM⌫'];
+const kb=$('kb');
+layout.forEach(l=>{const kr=document.createElement('div');kr.className='krow';[...l].forEach(ch=>{const b=document.createElement('button');b.className='key'+(ch==='⏎'||ch==='⌫'?' wide':'');b.textContent=ch==='⏎'?'Gissa':ch==='⌫'?'⌫':ch;b.dataset.k=ch;b.addEventListener('click',()=>press(ch));kr.appendChild(b);});kb.appendChild(kr);});
+function toast(m,ms){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),ms||1400);}
+function evaluate(g){const res=Array(5).fill('miss');const a=ANSWER.split('');const gg=g.split('');
+  for(let i=0;i<5;i++)if(gg[i]===a[i]){res[i]='hit';a[i]=null;gg[i]=null;}
+  for(let i=0;i<5;i++)if(gg[i]){const k=a.indexOf(gg[i]);if(k>-1){res[i]='near';a[k]=null;}}
+  return res;}
+function paintRow(i,g,res,anim){const tiles=[...rows[i].children];tiles.forEach((t,j)=>{const f=()=>{t.textContent=g[j];t.classList.add('filled',res[j]);};anim?setTimeout(f,j*120):f();
+  const k=kb.querySelector(`[data-k="${g[j]}"]`);if(k){const rank={miss:1,near:2,hit:3};const curr=k.classList.contains('hit')?3:k.classList.contains('near')?2:k.classList.contains('miss')?1:0;if(rank[res[j]]>curr){k.classList.remove('hit','near','miss');k.classList.add(res[j]);}}});}
+function drawCur(){const i=S.rows.length;if(i>5)return;[...rows[i].children].forEach((t,j)=>{t.textContent=cur[j]||'';t.classList.toggle('filled',!!cur[j]);});}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function press(ch){if(S.done||busy)return;
+  if(ch==='⌫'){cur=cur.slice(0,-1);drawCur();return;}
+  if(ch==='⏎'){submit();return;}
+  if(/^[A-ZÅÄÖ]$/.test(ch)&&cur.length<5){cur+=ch;drawCur();const t=rows[S.rows.length].children[cur.length-1];t.classList.add('pop');setTimeout(()=>t.classList.remove('pop'),100);}
+}
+function submit(){if(cur.length<5){rows[S.rows.length].classList.add('shake');setTimeout(()=>rows[S.rows.length].classList.remove('shake'),400);toast('Fem bokstäver');return;}
+  const g=cur;const res=evaluate(g);const i=S.rows.length;S.rows.push(g);busy=true;paintRow(i,g,res,true);cur='';
+  setTimeout(()=>{busy=false;const win=g===ANSWER;if(win||S.rows.length===6){S.done=true;const st=S.stats;st.n++;if(win){st.w++;st.s=(st.last===dayNo-1)?st.s+1:1;st.m=Math.max(st.m,st.s);st.d[S.rows.length-1]++;}else{st.s=0;}st.last=dayNo;save();toast(win?['Första försöket!','Snyggt!','Bra jobbat','Stabilt','Puh!','Precis!'][S.rows.length-1]:ANSWER,win?1500:3000);setTimeout(openStats,1200);}else save();},700);}
+function openStats(){const st=S.stats;$('s_n').textContent=st.n;$('s_w').textContent=st.n?Math.round(st.w/st.n*100):0;$('s_s').textContent=st.s;$('s_m').textContent=st.m;
+  const mx=Math.max(1,...st.d);$('dist').innerHTML=st.d.map((v,i)=>`<div><span style="background:none;color:var(--ink);padding:0">${i+1}</span><span class="${S.done&&S.rows[S.rows.length-1]===ANSWER&&S.rows.length===i+1?'me':''}" style="width:${Math.max(8,v/mx*100)}%">${v}</span></div>`).join('');
+  $('mtitle').textContent=S.done?(S.rows[S.rows.length-1]===ANSWER?`Dagens ord: ${ANSWER}`:`Det var ${ANSWER}`):'Statistik';
+  $('mdef').textContent=S.done?W[ANSWER]:'';
+  const t=new Date();const next=new Date(t.getFullYear(),t.getMonth(),t.getDate()+1);const ms=next-t;const h=Math.floor(ms/3600000),m=Math.floor(ms%3600000/60000);
+  $('next').textContent=`Nästa byggord om ${h} h ${m} min.`;$('share').style.display=S.done?'':'none';$('mstat').classList.add('on');}
+$('share').onclick=async()=>{const win=S.rows[S.rows.length-1]===ANSWER;const grid=S.rows.map(g=>evaluate(g).map(r=>r==='hit'?'🟧':r==='near'?'🟨':'⬜').join('')).join('\n');
+  const text=`Skruvat #${dayNo+1} ${win?S.rows.length:'X'}/6\n${grid}\nhttps://skruvat.stahledigital.se`;
+  if(navigator.share){try{await navigator.share({text});return;}catch(e){}}try{await navigator.clipboard.writeText(text);toast('Kopierat – klistra in var du vill');}catch(e){toast('Kunde inte kopiera');}};
+$('help').onclick=()=>$('mhelp').classList.add('on');$('stat').onclick=openStats;
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('.modal').classList.remove('on'));
+document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on');}));
+document.addEventListener('keydown',e=>{if(e.metaKey||e.ctrlKey)return;const k=e.key;if(k==='Enter')press('⏎');else if(k==='Backspace')press('⌫');else if(/^[a-zåäö]$/i.test(k))press(k.toUpperCase());});
+// restore
+S.rows.forEach((g,i)=>paintRow(i,g,evaluate(g),false));
+$('streak').textContent=S.stats.s?`🔥 ${S.stats.s} i rad`:'';
+if(!S.rows.length&&!localStorage.getItem(KEY+'_seen')){$('mhelp').classList.add('on');try{localStorage.setItem(KEY+'_seen','1')}catch(e){}}
+if(S.done)setTimeout(openStats,300);
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
+})();
+</script>
+</body>
+</html>
