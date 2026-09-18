@@ -1,24 +1,10 @@
-# Skruvat – skruvat.stahledigital.se
+# skruvat.stahledigital.se – flyttskylt
 
-Dagens byggord: gissa ett byggord med fem bokstäver på sex försök. Statisk PWA utan konton, utan kakor och utan byggsteg.
+Skruvat har flyttat till **https://stahledigital.se/verkstaden/skruvat** (kort länk stahledigital.se/skruvat). Anders beslutade 2026-09-18 att allt i Verkstaden ska bo under stahledigital.se.
 
-## Filer
+Det här repot är nu en flyttskylt på GitHub Pages:
+- `index.html` skickar besökaren vidare och tar med resultat och streak som var sparad i telefonen (`#flytt=` i adressen, skickas aldrig till servern).
+- `sw.js` städar bort den gamla appen ur telefonen.
+- Källan till spelet finns i sajtrepot: `site-cloudflare/app/verkstaden/skruvat/skruvat.html` + `public/verkstaden/skruvat/`. Historiken fram till skruvat-v3 finns kvar här i git.
 
-- `index.html` – hela spelet. Svarsorden och förklaringarna ligger i `W`. **Ordningen i `W` är dagarnas ordning**: första ordet är Skruvat #1 (14 sep 2026). Nya ord läggs sist. Flytta eller ta aldrig bort ett ord som redan varit dagens ord, för då byts ordet för alla som spelar.
-- `ord.txt` – tillåtna gissningar (cirka 9 300 ord med fem bokstäver). Härledd ur sv_SE-ordlistan, LGPL-3. Se `ORDLISTA-LICENS.txt`. Om filen inte laddas godkänns alla gissningar.
-- `sw.js` – service worker (gör att spelet fungerar utan nät). Höj `V` vid varje release.
-- `manifest.webmanifest`, ikoner, `og.png`, `sitemap.xml`, `robots.txt`, `CNAME`.
-
-Versionen syns i `<meta name="app-version">` (till exempel `skruvat-v3`), så att det går att kontrollera vad som ligger live.
-
-## Mätning
-
-Cloudflare Web Analytics, utan kakor. Samma webbplatsnyckel som Materialräknaren och Kapa. Filtrera på värden `skruvat.stahledigital.se` i Cloudflare.
-
-## Släppa en ny version
-
-Committa på `main`. Dubbelklicka på `PUSH_ALLT.command` i mappen Ståhle Digital. GitHub Pages bygger om på någon minut. Kontrollera sedan att live-sidan visar rätt `app-version`.
-
-## Ordlistan räcker
-
-367 svarsord räcker till och med den 15 september 2027. Fyll på före dess.
+Senare (Anders, DNS): när `skruvat` pekas om till sajtens Cloudflare Worker kan flytten göras som en riktig 301-omdirigering, och repot kan arkiveras. Ta inte bort repot innan dess, för då slutar gamla länkar fungera.
